@@ -571,6 +571,7 @@ const certificateBestStudent: TemplateDefinition = {
         fontSize: 16, fontWeight: 600, color: '$text',
       }),
       image('Подпись', { x: 300, y: 664, width: 150, height: 64 }, { slot: 'signature' }),
+      image('Печать', { x: 358, y: 656, width: 106, height: 106 }, { slot: 'seal', opacity: 0.9, rotation: -8 }),
       text('Директор', '{{teacherName}}', { x: 230, y: 706, width: 230, height: 26 }, {
         fontSize: 21, fontWeight: 800, color: '$text',
       }),
