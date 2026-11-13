@@ -1,6 +1,6 @@
 import type { Background, Category, CategoryId, LayoutContext, TemplateDefinition } from '../types/template'
 import { image, shape, techRow, text } from '../utils/document'
-import { ABSTRACT_ART, TECH_ART } from './art'
+import { ABSTRACT_ART, BEST_STUDENT_ART, TECH_ART } from './art'
 import { OKURMEN_KIDS_LOGO } from './brand'
 
 export const CATEGORIES: Category[] = [
@@ -517,6 +517,73 @@ const certificateOkurmen: TemplateDefinition = {
   layout: courseCertificateLayout,
 }
 
+const certificateBestStudent: TemplateDefinition = {
+  id: 'certificate-best-student',
+  name: 'Best Student of the Month',
+  description: 'Окурмэн Kids: сертификат «Айдын мыкты окуучусу» с кубком и лентами',
+  category: 'certificate',
+  orientation: 'landscape',
+  tags: ['окурмэн', 'okurmen', 'kids', 'best student', 'лучший ученик', 'мыкты окуучу', 'награда', 'месяц'],
+  palette: { primary: '#3E0F73', accent: '#E9AE3A', text: '#2A0F55', muted: '#4A2A78', surface: '#FFFFFF' },
+  fonts: { heading: 'Playfair Display', body: 'Montserrat' },
+  background: () => ({ type: 'image', color: '#FFFFFF', color2: '$accent', angle: 135, image: BEST_STUDENT_ART, imageOpacity: 1 }),
+  defaults: {
+    institution: 'Окурмэн Kids',
+    workType: 'Best Student',
+    subtitle: 'of the month',
+    title: 'October 2026',
+    subject: 'Айдын мыкты окуучусу',
+    studentName: '',
+    department:
+      'Октябрь айында көрсөткөн мыкты жетишкендиктери, активдүү катышуусу,\nкөңүл буруусу жана тырышчаактыгы үчүн\nбул сертификат менен сыйланат.',
+    teacherTitle: 'Директор',
+    teacherName: 'Мавлянов М. М.',
+    year: '2026',
+    logo: OKURMEN_KIDS_LOGO,
+  },
+  layout: ({ width: W }) => {
+    const cx = W / 2
+    const col = (w: number) => ({ x: cx - w / 2, width: w })
+    return [
+      image('Логотип', { x: cx - 50, y: 34, width: 100, height: 100 }, { slot: 'logo' }),
+      text('Заголовок', '{{workType}}', { ...col(760), y: 134, height: 76 }, {
+        fontFamily: '$heading', fontSize: 70, fontWeight: 800, align: 'center', uppercase: true, color: '$primary', lineHeight: 1,
+      }),
+      text('Подзаголовок', '{{subtitle}}', { ...col(360), y: 218, height: 26 }, {
+        fontSize: 21, fontWeight: 800, align: 'center', uppercase: true, letterSpacing: 300, color: '$primary',
+      }),
+      text('Месяц', '{{title}}', { ...col(320), y: 353, height: 30 }, {
+        fontSize: 27, fontWeight: 700, align: 'center', uppercase: true, color: '#FFFFFF',
+      }),
+      text('Номинация', '{{subject}}', { ...col(400), y: 397, height: 32 }, {
+        fontSize: 26, fontWeight: 800, align: 'center', color: '$text',
+      }),
+      text('Имя', '{{studentName}}', { ...col(560), y: 445, height: 46 }, {
+        fontFamily: '$heading', fontSize: 38, fontWeight: 700, italic: true, align: 'center', color: '$primary',
+      }),
+      shape('Линия для имени', 'line', { ...col(520), y: 488, height: 0 }, {
+        stroke: '$muted', strokeWidth: 1.2, opacity: 0.45,
+      }),
+      text('Описание', '{{department}}', { ...col(760), y: 507, height: 62 }, {
+        fontSize: 15, fontWeight: 600, align: 'center', color: '$text', lineHeight: 1.3,
+      }),
+      text('Девиз', 'Сен — {{institution}} академиясынын\nүлгүлүү жана активдүү окуучусуң!', { ...col(500), y: 584, height: 46 }, {
+        fontSize: 18, fontWeight: 800, align: 'center', color: '$text', lineHeight: 1.2,
+      }),
+      text('Должность', '{{teacherTitle}}', { x: W * 0.285, y: 660, width: 200, height: 20 }, {
+        fontSize: 15, fontWeight: 600, color: '$text',
+      }),
+      text('Директор', '{{teacherName}}', { x: W * 0.285, y: 682, width: 200, height: 26 }, {
+        fontSize: 20, fontWeight: 800, color: '$text',
+      }),
+      image('Подпись', { x: W * 0.285 + 20, y: 636, width: 130, height: 64 }, { slot: 'signature' }),
+      text('Дата', '31-октябрь, {{year}}-жыл', { x: cx + 168, y: 667, width: 240, height: 24 }, {
+        fontSize: 18, fontWeight: 600, color: '$text',
+      }),
+    ]
+  },
+}
+
 const certificateClassic: TemplateDefinition = {
   id: 'certificate-classic',
   name: 'Диплом с отличием',
@@ -722,6 +789,7 @@ export const TEMPLATES: TemplateDefinition[] = [
   itGradient,
   certificateTech,
   certificateOkurmen,
+  certificateBestStudent,
   certificateClassic,
   reportMinimal,
   presentationTitle,
