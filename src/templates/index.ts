@@ -544,41 +544,38 @@ const certificateBestStudent: TemplateDefinition = {
   layout: ({ width: W }) => {
     const cx = W / 2
     const col = (w: number) => ({ x: cx - w / 2, width: w })
+    const title = { fontFamily: '$heading', fontSize: 84, fontWeight: 800, align: 'center', uppercase: true, lineHeight: 1, letterSpacing: 10 } as const
     return [
-      image('Логотип', { x: cx - 50, y: 34, width: 100, height: 100 }, { slot: 'logo' }),
-      text('Заголовок', '{{workType}}', { ...col(760), y: 134, height: 76 }, {
-        fontFamily: '$heading', fontSize: 70, fontWeight: 800, align: 'center', uppercase: true, color: '$primary', lineHeight: 1,
+      image('Логотип', { x: cx - 58, y: 10, width: 116, height: 116 }, { slot: 'logo' }),
+      text('Заголовок: золотой край', '{{workType}}', { ...col(820), y: 141, height: 90 }, { ...title, color: '#D9A23A' }),
+      text('Заголовок', '{{workType}}', { ...col(820), y: 137, height: 90 }, { ...title, color: '$primary' }),
+      text('Подзаголовок', '{{subtitle}}', { ...col(340), y: 235, height: 28 }, {
+        fontSize: 24, fontWeight: 800, align: 'center', uppercase: true, letterSpacing: 300, color: '$primary',
       }),
-      text('Подзаголовок', '{{subtitle}}', { ...col(360), y: 218, height: 26 }, {
-        fontSize: 21, fontWeight: 800, align: 'center', uppercase: true, letterSpacing: 300, color: '$primary',
+      text('Месяц', '{{title}}', { ...col(330), y: 359, height: 32 }, {
+        fontSize: 29, fontWeight: 700, align: 'center', uppercase: true, color: '#FFFFFF',
       }),
-      text('Месяц', '{{title}}', { ...col(320), y: 353, height: 30 }, {
-        fontSize: 27, fontWeight: 700, align: 'center', uppercase: true, color: '#FFFFFF',
+      text('Номинация', '{{subject}}', { ...col(420), y: 401, height: 34 }, {
+        fontSize: 27, fontWeight: 800, align: 'center', color: '$text',
       }),
-      text('Номинация', '{{subject}}', { ...col(400), y: 397, height: 32 }, {
-        fontSize: 26, fontWeight: 800, align: 'center', color: '$text',
+      text('Имя', '{{studentName}}', { ...col(560), y: 450, height: 44 }, {
+        fontFamily: '$heading', fontSize: 36, fontWeight: 700, italic: true, align: 'center', color: '$primary',
       }),
-      text('Имя', '{{studentName}}', { ...col(560), y: 445, height: 46 }, {
-        fontFamily: '$heading', fontSize: 38, fontWeight: 700, italic: true, align: 'center', color: '$primary',
+      text('Описание', '{{department}}', { ...col(780), y: 525, height: 64 }, {
+        fontSize: 16, fontWeight: 600, align: 'center', color: '$text', lineHeight: 1.28,
       }),
-      shape('Линия для имени', 'line', { ...col(520), y: 488, height: 0 }, {
-        stroke: '$muted', strokeWidth: 1.2, opacity: 0.45,
+      text('Девиз', 'Сен — {{institution}} академиясынын\nүлгүлүү жана активдүү окуучусуң!', { ...col(520), y: 599, height: 46 }, {
+        fontSize: 19, fontWeight: 800, align: 'center', color: '$text', lineHeight: 1.18,
       }),
-      text('Описание', '{{department}}', { ...col(760), y: 507, height: 62 }, {
-        fontSize: 15, fontWeight: 600, align: 'center', color: '$text', lineHeight: 1.3,
+      text('Должность', '{{teacherTitle}}', { x: 230, y: 684, width: 220, height: 20 }, {
+        fontSize: 16, fontWeight: 600, color: '$text',
       }),
-      text('Девиз', 'Сен — {{institution}} академиясынын\nүлгүлүү жана активдүү окуучусуң!', { ...col(500), y: 584, height: 46 }, {
-        fontSize: 18, fontWeight: 800, align: 'center', color: '$text', lineHeight: 1.2,
+      image('Подпись', { x: 300, y: 664, width: 150, height: 64 }, { slot: 'signature' }),
+      text('Директор', '{{teacherName}}', { x: 230, y: 706, width: 230, height: 26 }, {
+        fontSize: 21, fontWeight: 800, color: '$text',
       }),
-      text('Должность', '{{teacherTitle}}', { x: W * 0.285, y: 660, width: 200, height: 20 }, {
-        fontSize: 15, fontWeight: 600, color: '$text',
-      }),
-      text('Директор', '{{teacherName}}', { x: W * 0.285, y: 682, width: 200, height: 26 }, {
-        fontSize: 20, fontWeight: 800, color: '$text',
-      }),
-      image('Подпись', { x: W * 0.285 + 20, y: 636, width: 130, height: 64 }, { slot: 'signature' }),
-      text('Дата', '31-октябрь, {{year}}-жыл', { x: cx + 168, y: 667, width: 240, height: 24 }, {
-        fontSize: 18, fontWeight: 600, color: '$text',
+      text('Дата', '31-октябрь, {{year}}-жыл', { x: 732, y: 696, width: 250, height: 24 }, {
+        fontSize: 19, fontWeight: 600, color: '$text',
       }),
     ]
   },
