@@ -97,212 +97,256 @@ export const ABSTRACT_ART = svgUri(`
 
 /* ------------------------------------------------------------------ best student */
 
+type Pt = [number, number]
 const r1 = (n: number) => Math.round(n * 10) / 10
 
+/** A pointed leaf lying along +x from the origin. */
+const leafPath = (len: number, w: number) =>
+  `M0 0 C${r1(len * 0.3)} ${r1(-w)} ${r1(len * 0.72)} ${r1(-w)} ${r1(len)} 0 C${r1(len * 0.72)} ${r1(w)} ${r1(len * 0.3)} ${r1(w)} 0 0Z`
+
 /**
- * A laurel branch growing upward along an arc. `dir` = 1 curves to the right, -1 to the left
- * (mirror image), so a pair of branches with opposite `dir` frames whatever sits between them.
+ * A laurel branch: a stem along a quadratic curve from `p0` (base) to `p2` (tip) through control `p1`,
+ * with pairs of pointed leaves angled towards the tip, shrinking as they go.
  */
-function laurel(x: number, y: number, size: number, dir: 1 | -1, fill: string, opacity = 1, leaves = 7): string {
-  const parts: string[] = []
-  const R = size
-  // arc centre sits to the side the branch bends towards
-  const cx = x + dir * R
-  const cy = y
-  let stem = ''
-  for (let i = 0; i <= leaves; i++) {
-    const t = i / leaves
-    const a = Math.PI - t * 1.35 // from pointing outwards to nearly upwards
-    const px = cx + dir * R * Math.cos(a)
-    const py = cy - R * Math.sin(a)
-    stem += `${i ? 'L' : 'M'}${r1(px)} ${r1(py)} `
-    if (i === 0) continue
-    const tangent = (Math.atan2(Math.cos(a), dir * Math.sin(a)) * 180) / Math.PI
-    const len = size * (0.34 - t * 0.1)
-    const w = len * 0.42
+function laurel(p0: Pt, p1: Pt, p2: Pt, pairs: number, leaf: number, fill: string, opacity = 1, vein?: string): string {
+  const at = (t: number): Pt => [
+    (1 - t) ** 2 * p0[0] + 2 * (1 - t) * t * p1[0] + t * t * p2[0],
+    (1 - t) ** 2 * p0[1] + 2 * (1 - t) * t * p1[1] + t * t * p2[1],
+  ]
+  const tangent = (t: number) => {
+    const dx = 2 * (1 - t) * (p1[0] - p0[0]) + 2 * t * (p2[0] - p1[0])
+    const dy = 2 * (1 - t) * (p1[1] - p0[1]) + 2 * t * (p2[1] - p1[1])
+    return (Math.atan2(dy, dx) * 180) / Math.PI
+  }
+  const leaves: string[] = []
+  for (let i = 0; i < pairs; i++) {
+    const t = 0.08 + (i / pairs) * 0.86
+    const len = leaf * (1 - t * 0.35)
+    const [x, y] = at(t)
+    const a = tangent(t)
     for (const side of [-1, 1]) {
-      const rot = tangent + side * 38
-      parts.push(
-        `<ellipse cx="${r1(px)}" cy="${r1(py)}" rx="${r1(len / 2)}" ry="${r1(w / 2)}" transform="rotate(${r1(rot)} ${r1(px)} ${r1(py)}) translate(${r1(len / 2)} 0)"/>`,
-      )
+      const [lx, ly] = at(Math.min(1, t + side * 0.025 + 0.025))
+      const d = leafPath(len, len * 0.3)
+      leaves.push(`<path d="${d}" transform="translate(${r1(side < 0 ? x : lx)} ${r1(side < 0 ? y : ly)}) rotate(${r1(a + side * 42)})"/>`)
+      if (vein)
+        leaves.push(
+          `<path d="M${r1(len * 0.1)} 0 L${r1(len * 0.85)} 0" stroke="${vein}" stroke-width="${r1(Math.max(0.6, len * 0.035))}" transform="translate(${r1(side < 0 ? x : lx)} ${r1(side < 0 ? y : ly)}) rotate(${r1(a + side * 42)})"/>`,
+        )
     }
   }
-  const tip = Math.PI - 1.35
-  const tx = cx + dir * R * Math.cos(tip)
-  const ty = cy - R * Math.sin(tip)
-  const tipRot = (Math.atan2(Math.cos(tip), dir * Math.sin(tip)) * 180) / Math.PI
-  parts.push(
-    `<ellipse cx="${r1(tx)}" cy="${r1(ty)}" rx="${r1(size * 0.13)}" ry="${r1(size * 0.055)}" transform="rotate(${r1(tipRot)} ${r1(tx)} ${r1(ty)}) translate(${r1(size * 0.12)} 0)"/>`,
-  )
-  return `<g fill="${fill}" opacity="${opacity}"><path d="${stem}" fill="none" stroke="${fill}" stroke-width="${r1(size * 0.025)}" stroke-linecap="round"/>${parts.join('')}</g>`
+  const tip = leafPath(leaf * 0.62, leaf * 0.19)
+  leaves.push(`<path d="${tip}" transform="translate(${r1(p2[0])} ${r1(p2[1])}) rotate(${r1(tangent(1))})"/>`)
+  return `<g fill="${fill}" opacity="${opacity}">
+    <path d="M${p0[0]} ${p0[1]} Q${p1[0]} ${p1[1]} ${p2[0]} ${p2[1]}" fill="none" stroke="${fill}" stroke-width="${r1(Math.max(1.2, leaf * 0.07))}" stroke-linecap="round"/>
+    ${leaves.join('')}</g>`
 }
 
-const laurelPair = (cx: number, y: number, gap: number, size: number, fill: string, opacity = 1, leaves = 7) =>
-  laurel(cx - gap, y, size, -1, fill, opacity, leaves) + laurel(cx + gap, y, size, 1, fill, opacity, leaves)
+/** The branch and its mirror image around the vertical axis `cx`. */
+function laurelPair(cx: number, p0: Pt, p1: Pt, p2: Pt, pairs: number, leaf: number, fill: string, opacity = 1, vein?: string) {
+  const m = (p: Pt): Pt => [2 * cx - p[0], p[1]]
+  return laurel(p0, p1, p2, pairs, leaf, fill, opacity, vein) + laurel(m(p0), m(p1), m(p2), pairs, leaf, fill, opacity, vein)
+}
 
-/** Ribbon banner with folded tails, centred on cx. */
-function banner(cx: number, y: number, w: number, h: number, fill: string, shade: string, tail = 34): string {
+/** Ribbon banner with notched tails folded behind the band. `lift` < 0 puts the tails higher. */
+function banner(cx: number, y: number, w: number, h: number, fill: string, shade: string, tail: number, lift: number): string {
   const l = cx - w / 2
   const r = cx + w / 2
-  const t = h * 0.28
+  const ty = y + lift
+  const fold = lift > 0 ? `M${l} ${y + h} L${l + 16} ${ty + h} V${y + h}Z M${r} ${y + h} L${r - 16} ${ty + h} V${y + h}Z`
+    : `M${l} ${y} L${l + 16} ${ty} V${y}Z M${r} ${y} L${r - 16} ${ty} V${y}Z`
   return `
-  <path d="M${l - tail} ${y + t} H${l + 6} V${y + h + t} H${l - tail} L${l - tail + 16} ${y + t + h / 2} Z" fill="${shade}"/>
-  <path d="M${r + tail} ${y + t} H${r - 6} V${y + h + t} H${r + tail} L${r + tail - 16} ${y + t + h / 2} Z" fill="${shade}"/>
-  <path d="M${l} ${y + h} L${l + 14} ${y + h + t} V${y + h} Z" fill="#000" opacity="0.35"/>
-  <path d="M${r} ${y + h} L${r - 14} ${y + h + t} V${y + h} Z" fill="#000" opacity="0.35"/>
-  <rect x="${l}" y="${y}" width="${w}" height="${h}" fill="${fill}"/>`
+  <path d="M${l - tail} ${ty} H${l + 16} V${ty + h} H${l - tail} L${l - tail + 18} ${ty + h / 2}Z" fill="${shade}"/>
+  <path d="M${r + tail} ${ty} H${r - 16} V${ty + h} H${r + tail} L${r + tail - 18} ${ty + h / 2}Z" fill="${shade}"/>
+  <path d="${fold}" fill="#000" opacity="0.4"/>
+  <rect x="${l}" y="${y}" width="${w}" height="${h}" fill="${fill}"/>
+  <rect x="${l}" y="${y + 2}" width="${w}" height="1.5" fill="#fff" opacity="0.35"/>
+  <rect x="${l}" y="${y + h - 3.5}" width="${w}" height="1.5" fill="#fff" opacity="0.25"/>`
+}
+
+const star = (x: number, y: number, r: number) => {
+  const pts = Array.from({ length: 10 }, (_, i) => {
+    const a = -Math.PI / 2 + (i * Math.PI) / 5
+    const rr = i % 2 ? r * 0.45 : r
+    return `${r1(x + rr * Math.cos(a))} ${r1(y + rr * Math.sin(a))}`
+  })
+  return `M${pts.join(' L')}Z`
 }
 
 function bestStudentSvg(): string {
   const W = 1123
   const H = 794
   const cx = W / 2
+  const gold = 'url(#gold)'
   return `
 <svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
   <defs>
-    <radialGradient id="bg" cx="50%" cy="45%" r="70%">
+    <radialGradient id="bg" cx="50%" cy="48%" r="72%">
       <stop offset="0" stop-color="#FFFFFF"/>
-      <stop offset="0.7" stop-color="#FBF8FD"/>
-      <stop offset="1" stop-color="#F1EAF6"/>
+      <stop offset="0.65" stop-color="#FCFAFD"/>
+      <stop offset="1" stop-color="#F3ECF6"/>
     </radialGradient>
     <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#FFE9A3"/>
-      <stop offset="0.45" stop-color="#F2C14E"/>
-      <stop offset="1" stop-color="#C8891F"/>
+      <stop offset="0" stop-color="#FFE8A0"/>
+      <stop offset="0.5" stop-color="#EDB540"/>
+      <stop offset="1" stop-color="#B9771A"/>
     </linearGradient>
     <linearGradient id="goldH" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#C8891F"/>
-      <stop offset="0.25" stop-color="#FFE39A"/>
-      <stop offset="0.55" stop-color="#E9AE3A"/>
-      <stop offset="0.8" stop-color="#FFE7A6"/>
-      <stop offset="1" stop-color="#C8891F"/>
+      <stop offset="0" stop-color="#C0811C"/>
+      <stop offset="0.2" stop-color="#FFE7A0"/>
+      <stop offset="0.5" stop-color="#EDB03C"/>
+      <stop offset="0.8" stop-color="#FFE6A2"/>
+      <stop offset="1" stop-color="#C0811C"/>
     </linearGradient>
-    <linearGradient id="goldSoft" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#FCE7AE" stop-opacity="0.2"/>
-      <stop offset="0.15" stop-color="#FCE3A0"/>
-      <stop offset="0.85" stop-color="#FCE3A0"/>
-      <stop offset="1" stop-color="#FCE7AE" stop-opacity="0.2"/>
+    <linearGradient id="goldD" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#B8761A"/>
+      <stop offset="0.35" stop-color="#FFE9A8"/>
+      <stop offset="0.55" stop-color="#F3C04E"/>
+      <stop offset="0.75" stop-color="#FFF0BE"/>
+      <stop offset="1" stop-color="#B8761A"/>
+    </linearGradient>
+    <linearGradient id="scroll" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFF0C2"/>
+      <stop offset="0.5" stop-color="#FBDD8A"/>
+      <stop offset="1" stop-color="#F2C45C"/>
     </linearGradient>
     <linearGradient id="purple" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#7B2FBE"/>
-      <stop offset="1" stop-color="#3E0F73"/>
+      <stop offset="0" stop-color="#7A2CC0"/>
+      <stop offset="0.55" stop-color="#5A1A9C"/>
+      <stop offset="1" stop-color="#3A0C6C"/>
     </linearGradient>
-    <linearGradient id="purpleH" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#4A1287"/>
-      <stop offset="0.5" stop-color="#8236C9"/>
-      <stop offset="1" stop-color="#3B0D6E"/>
+    <linearGradient id="purpleD" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3A0C6C"/>
+      <stop offset="0.45" stop-color="#8A3CD2"/>
+      <stop offset="1" stop-color="#3A0C6C"/>
     </linearGradient>
-    <radialGradient id="seal" cx="40%" cy="35%" r="70%">
-      <stop offset="0" stop-color="#FFF1B8"/>
-      <stop offset="0.5" stop-color="#F4C24B"/>
-      <stop offset="1" stop-color="#C07F17"/>
+    <radialGradient id="seal" cx="38%" cy="32%" r="72%">
+      <stop offset="0" stop-color="#FFF4C4"/>
+      <stop offset="0.5" stop-color="#F5C343"/>
+      <stop offset="1" stop-color="#B9771A"/>
     </radialGradient>
-    <filter id="sh" x="-20%" y="-20%" width="140%" height="160%">
-      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#5A2A00" flood-opacity="0.25"/>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#FFF6D6" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#FFF6D6" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="sh" x="-20%" y="-30%" width="140%" height="170%">
+      <feDropShadow dx="0" dy="3" stdDeviation="3.5" flood-color="#4A2400" flood-opacity="0.28"/>
     </filter>
   </defs>
 
   <rect width="${W}" height="${H}" fill="url(#bg)"/>
 
-  <!-- subtle guilloche lines -->
-  <g fill="none" stroke="#E7C778" stroke-opacity="0.35" stroke-width="0.8">
-    ${Array.from({ length: 9 }, (_, i) => `<path d="M0 ${560 + i * 14} C 200 ${470 + i * 16}, 330 ${700 + i * 8}, 520 ${794}"/>`).join('')}
-    ${Array.from({ length: 9 }, (_, i) => `<path d="M${W} ${170 - i * 12} C ${W - 200} ${260 - i * 14}, ${W - 330} ${40 + i * 6}, ${W - 520} 0"/>`).join('')}
+  <!-- fine gold sweep lines -->
+  <g fill="none" stroke="#E6C27A" stroke-opacity="0.32" stroke-width="0.7">
+    ${Array.from({ length: 12 }, (_, i) => `<path d="M0 ${500 + i * 10} C 180 ${430 + i * 14}, 330 ${690 + i * 6}, ${470 + i * 6} ${H}"/>`).join('')}
+    ${Array.from({ length: 12 }, (_, i) => `<path d="M${W} ${300 - i * 10} C ${W - 180} ${370 - i * 14}, ${W - 330} ${110 - i * 6}, ${W - 470 - i * 6} 0"/>`).join('')}
   </g>
 
-  <!-- big faded laurels on the sides -->
-  ${laurel(150, 520, 260, -1, '#F2D9A0', 0.55, 8)}
-  ${laurel(W - 150, 520, 260, 1, '#F2D9A0', 0.55, 8)}
+  <!-- big faded olive branches on the sides -->
+  ${laurelPair(cx, [175, 505], [30, 360], [185, 120], 9, 62, '#F1D9A2', 0.6)}
 
   <!-- gold frame -->
-  <rect x="22" y="22" width="${W - 44}" height="${H - 44}" rx="18" fill="none" stroke="url(#goldH)" stroke-width="2.5"/>
-  <rect x="32" y="32" width="${W - 64}" height="${H - 64}" rx="14" fill="none" stroke="#E2B95A" stroke-width="0.8" stroke-opacity="0.8"/>
+  <rect x="26" y="26" width="${W - 52}" height="${H - 52}" rx="20" fill="none" stroke="url(#goldH)" stroke-width="2.5"/>
+  <rect x="36" y="36" width="${W - 72}" height="${H - 72}" rx="15" fill="none" stroke="#E7BE62" stroke-width="0.8" stroke-opacity="0.8"/>
 
-  <!-- corner ribbons: top-left -->
-  <path d="M0 0 H300 C 220 40, 120 90, 70 190 C 40 250, 20 290, 0 310 Z" fill="url(#purpleH)"/>
-  <path d="M0 250 C 60 200, 110 110, 210 50 C 250 28, 290 10, 330 0 H372 C 300 25, 230 60, 170 120 C 110 180, 60 250, 0 300 Z" fill="url(#goldH)"/>
-  <path d="M0 330 C 50 280, 100 180, 200 100 C 260 55, 320 25, 400 0 H415 C 330 30, 270 65, 215 115 C 125 195, 60 290, 0 350 Z" fill="#E9B44C" opacity="0.7"/>
-
-  <!-- corner ribbons: bottom-right -->
-  <path d="M${W} ${H} H${W - 300} C ${W - 220} ${H - 40}, ${W - 120} ${H - 90}, ${W - 70} ${H - 190} C ${W - 40} ${H - 250}, ${W - 20} ${H - 290}, ${W} ${H - 310} Z" fill="url(#purpleH)"/>
-  <path d="M${W} ${H - 250} C ${W - 60} ${H - 200}, ${W - 110} ${H - 110}, ${W - 210} ${H - 50} C ${W - 250} ${H - 28}, ${W - 290} ${H - 10}, ${W - 330} ${H} H${W - 372} C ${W - 300} ${H - 25}, ${W - 230} ${H - 60}, ${W - 170} ${H - 120} C ${W - 110} ${H - 180}, ${W - 60} ${H - 250}, ${W} ${H - 300} Z" fill="url(#goldH)"/>
-  <path d="M${W} ${H - 330} C ${W - 50} ${H - 280}, ${W - 100} ${H - 180}, ${W - 200} ${H - 100} C ${W - 260} ${H - 55}, ${W - 320} ${H - 25}, ${W - 400} ${H} H${W - 415} C ${W - 330} ${H - 30}, ${W - 270} ${H - 65}, ${W - 215} ${H - 115} C ${W - 125} ${H - 195}, ${W - 60} ${H - 290}, ${W} ${H - 350} Z" fill="#E9B44C" opacity="0.7"/>
-
-  <!-- top logo laurels -->
-  ${laurelPair(cx, 128, 62, 70, 'url(#gold)', 1, 6)}
-
-  <!-- "of the month" gold ribbon -->
-  <g filter="url(#sh)">${banner(cx, 210, 440, 40, 'url(#goldH)', '#C8891F', 40)}</g>
-  <g fill="#5B1A9A">
-    <path d="M${cx - 196} 230 l3 -7 l3 7 l7 0 l-6 4 l2 7 l-6 -4 l-6 4 l2 -7 l-6 -4 Z"/>
-    <path d="M${cx + 190} 230 l3 -7 l3 7 l7 0 l-6 4 l2 7 l-6 -4 l-6 4 l2 -7 l-6 -4 Z"/>
-  </g>
-
-  <!-- trophy -->
-  ${laurelPair(cx, 330, 34, 72, 'url(#gold)', 1, 6)}
+  <!-- top-left corner ribbon -->
   <g filter="url(#sh)">
-    <path d="M${cx - 36} 262 C ${cx - 62} 262, ${cx - 64} 296, ${cx - 30} 302" fill="none" stroke="url(#gold)" stroke-width="7"/>
-    <path d="M${cx + 36} 262 C ${cx + 62} 262, ${cx + 64} 296, ${cx + 30} 302" fill="none" stroke="url(#gold)" stroke-width="7"/>
-    <path d="M${cx - 40} 256 H${cx + 40} C ${cx + 40} 300, ${cx + 22} 314, ${cx} 316 C ${cx - 22} 314, ${cx - 40} 300, ${cx - 40} 256 Z" fill="url(#gold)"/>
-    <rect x="${cx - 6}" y="314" width="12" height="14" fill="#D9A032"/>
-    <path d="M${cx - 20} 328 H${cx + 20} L${cx + 26} 342 H${cx - 26} Z" fill="url(#gold)"/>
-    <path d="M${cx} 268 l5 11 l12 1 l-9 8 l3 12 l-11 -6 l-11 6 l3 -12 l-9 -8 l12 -1 Z" fill="#FFF3C4"/>
+    <path d="M0 0 H345 C 235 45, 115 140, 0 320 Z" fill="url(#purpleD)"/>
+    <path d="M0 150 C 70 90, 150 35, 225 0 H300 C 200 45, 90 120, 0 222 Z" fill="url(#goldD)"/>
+    <path d="M0 60 C 30 40, 70 18, 110 0 H128 C 85 22, 40 50, 0 78 Z" fill="url(#goldD)" opacity="0.9"/>
+  </g>
+  <path d="M0 345 C 115 165, 240 60, 380 0" fill="none" stroke="url(#goldD)" stroke-width="4"/>
+  <path d="M0 372 C 125 185, 260 70, 420 0" fill="none" stroke="#E7BE62" stroke-width="1.4" opacity="0.7"/>
+
+  <g transform="translate(${W} ${H}) scale(0.86) translate(${-W} ${-H})">
+  <!-- bottom-right corner ribbon -->
+  <g filter="url(#sh)">
+    <path d="M${W} ${H} V${H - 330} C ${W - 120} ${H - 190}, ${W - 260} ${H - 70}, ${W - 400} ${H} Z" fill="url(#purpleD)"/>
+    <path d="M${W} ${H - 235} C ${W - 100} ${H - 150}, ${W - 205} ${H - 60}, ${W - 300} ${H} H${W - 225} C ${W - 150} ${H - 50}, ${W - 70} ${H - 110}, ${W} ${H - 160} Z" fill="url(#goldD)"/>
+    <path d="M${W} ${H - 90} C ${W - 30} ${H - 60}, ${W - 70} ${H - 25}, ${W - 100} ${H} H${W - 80} C ${W - 55} ${H - 25}, ${W - 25} ${H - 50}, ${W} ${H - 70} Z" fill="url(#goldD)" opacity="0.9"/>
+  </g>
+  <path d="M${W} ${H - 360} C ${W - 130} ${H - 210}, ${W - 280} ${H - 80}, ${W - 435} ${H}" fill="none" stroke="url(#goldD)" stroke-width="4"/>
+  <path d="M${W} ${H - 390} C ${W - 140} ${H - 230}, ${W - 300} ${H - 90}, ${W - 470} ${H}" fill="none" stroke="#E7BE62" stroke-width="1.4" opacity="0.7"/>
+
   </g>
 
-  <!-- month purple ribbon -->
-  <g filter="url(#sh)">${banner(cx, 346, 320, 40, 'url(#purple)', '#4A1287', 44)}</g>
-  <rect x="${cx - 160}" y="348" width="320" height="2" fill="#FFFFFF" opacity="0.25"/>
+  <!-- logo laurels -->
+  ${laurelPair(cx, [cx - 62, 122], [cx - 128, 108], [cx - 128, 28], 6, 30, gold, 1, '#B9771A')}
+
+  <!-- "of the month" ribbon -->
+  <g filter="url(#sh)">${banner(cx, 226, 440, 42, 'url(#goldH)', '#C2841F', 44, 10)}</g>
+  <path d="${star(cx - 188, 247, 9)} ${star(cx + 188, 247, 9)}" fill="#4A1287"/>
+
+  <!-- trophy with laurels -->
+  <ellipse cx="${cx}" cy="318" rx="80" ry="52" fill="url(#glow)"/>
+  ${laurelPair(cx, [cx - 30, 360], [cx - 95, 352], [cx - 112, 278], 6, 28, gold, 1, '#B9771A')}
+  <g filter="url(#sh)" transform="translate(${cx} 280)">
+    <path d="M-38 6 C -70 6, -72 46, -32 52" fill="none" stroke="url(#gold)" stroke-width="7"/>
+    <path d="M38 6 C 70 6, 72 46, 32 52" fill="none" stroke="url(#gold)" stroke-width="7"/>
+    <path d="M-44 0 H44 C 44 48, 24 64, 0 66 C -24 64, -44 48, -44 0 Z" fill="url(#gold)"/>
+    <ellipse cx="0" cy="1" rx="44" ry="5" fill="#FFE9A6"/>
+    <rect x="-7" y="64" width="14" height="13" fill="#D29A2E"/>
+    <path d="M-22 77 H22 L28 92 H-28 Z" fill="url(#gold)"/>
+    <path d="${star(0, 30, 15)}" fill="#FFF4C9"/>
+  </g>
+
+  <!-- month ribbon -->
+  <g filter="url(#sh)">${banner(cx, 352, 330, 44, 'url(#purple)', '#45107E', 52, -12)}</g>
 
   <!-- subtitle rules -->
-  <path d="M${cx - 300} 412 H${cx - 205}" stroke="url(#goldH)" stroke-width="2"/>
-  <path d="M${cx + 205} 412 H${cx + 300}" stroke="url(#goldH)" stroke-width="2"/>
+  <path d="M270 418 H352" stroke="url(#goldH)" stroke-width="2.2"/>
+  <path d="M${W - 352} 418 H${W - 270}" stroke="url(#goldH)" stroke-width="2.2"/>
 
   <!-- name plate -->
-  ${laurel(222, 495, 58, -1, 'url(#gold)', 1, 6)}
-  ${laurel(W - 222, 495, 58, 1, 'url(#gold)', 1, 6)}
+  ${laurelPair(cx, [222, 520], [168, 505], [182, 430], 5, 26, gold, 1, '#B9771A')}
   <g filter="url(#sh)">
-    <path d="M${cx - 300} 432 H${cx + 300} q 12 0 12 12 v4 q 0 6 6 6 v28 q -6 0 -6 6 v4 q 0 12 -12 12 H${cx - 300} q -12 0 -12 -12 v-4 q 0 -6 -6 -6 v-28 q 6 0 6 -6 v-4 q 0 -12 12 -12 Z" fill="#FFFFFF" stroke="url(#goldH)" stroke-width="3"/>
+    <path d="M238 440 H${W - 238} q0 14 14 14 V498 q-14 0 -14 14 H238 q0 -14 -14 -14 V454 q14 0 14 -14 Z" fill="#FFFFFF" stroke="url(#goldH)" stroke-width="3.5"/>
   </g>
-  <path d="M${cx - 290} 440 H${cx + 290} q 8 0 8 8 v42 q 0 8 -8 8 H${cx - 290} q -8 0 -8 -8 v-42 q 0 -8 8 -8 Z" fill="none" stroke="#E9C46A" stroke-width="0.8"/>
+  <path d="M244 447 H${W - 244} q2 9 10 10 V495 q-8 1 -10 10 H244 q-2 -9 -10 -10 V457 q8 -1 10 -10 Z" fill="none" stroke="#EBC46C" stroke-width="1"/>
+  <path d="M282 495 H${W - 282}" stroke="#4A1287" stroke-width="1.6" stroke-dasharray="1.6 3.4" stroke-linecap="round"/>
 
-  <!-- motto plate -->
-  ${laurel(290, 625, 40, -1, 'url(#gold)', 1, 5)}
-  ${laurel(W - 290, 625, 40, 1, 'url(#gold)', 1, 5)}
-  <rect x="${cx - 255}" y="578" width="510" height="56" rx="12" fill="url(#goldSoft)"/>
+  <!-- motto scroll -->
+  ${laurelPair(cx, [282, 650], [252, 640], [256, 594], 4, 18, gold, 1, '#B9771A')}
+  <g filter="url(#sh)">
+    <path d="M300 594 H${W - 300} q10 28 0 56 H300 q-10 -28 0 -56 Z" fill="url(#scroll)"/>
+  </g>
+  <path d="M300 594 q-14 4 -12 14 q4 6 12 2 M${W - 300} 594 q14 4 12 14 q-4 6 -12 2" fill="#D9A040"/>
+  <path d="M300 650 q-14 -4 -12 -14 q4 -6 12 -2 M${W - 300} 650 q14 -4 12 -14 q-4 -6 -12 -2" fill="#D9A040"/>
 
   <!-- footer separators -->
-  <path d="M${W * 0.27} 650 V710" stroke="#E2B95A" stroke-width="1.5"/>
-  <path d="M${cx - 95} 650 V710" stroke="#E2B95A" stroke-width="1.5"/>
-  <path d="M${cx + 95} 650 V710" stroke="#E2B95A" stroke-width="1.5"/>
+  <path d="M212 680 V732" stroke="#E2B95A" stroke-width="1.6"/>
+  <path d="M471 668 V742" stroke="#E2B95A" stroke-width="1.6"/>
+  <path d="M651 668 V742" stroke="#E2B95A" stroke-width="1.6"/>
 
   <!-- person icon -->
-  <g fill="none" stroke="#4A1287" stroke-width="2.2">
-    <circle cx="${W * 0.215}" cy="667" r="9"/>
-    <path d="M${W * 0.215 - 17} 696 c 0 -12 8 -18 17 -18 s 17 6 17 18 Z"/>
+  <g fill="none" stroke="#3A0C6C" stroke-width="2.4">
+    <circle cx="180" cy="696" r="10"/>
+    <path d="M161 726 c0 -13 9 -19 19 -19 s19 6 19 19 Z"/>
   </g>
+
   <!-- calendar icon -->
-  <g fill="#4A1287">
-    <rect x="${cx + 125}" y="662" width="32" height="30" rx="4" fill="none" stroke="#4A1287" stroke-width="2.4"/>
-    <rect x="${cx + 125}" y="662" width="32" height="8" rx="3"/>
-    <rect x="${cx + 131}" y="657" width="3" height="9" rx="1.5"/><rect x="${cx + 148}" y="657" width="3" height="9" rx="1.5"/>
-    ${[0, 1, 2].flatMap((r) => [0, 1, 2, 3].map((c) => `<rect x="${cx + 130 + c * 6.3}" y="${674 + r * 5.5}" width="4" height="3.5"/>`)).join('')}
+  <g fill="#3A0C6C">
+    <rect x="684" y="690" width="34" height="32" rx="5" fill="none" stroke="#3A0C6C" stroke-width="2.6"/>
+    <rect x="684" y="690" width="34" height="9" rx="4"/>
+    <rect x="690" y="684" width="3.4" height="10" rx="1.7"/><rect x="709" y="684" width="3.4" height="10" rx="1.7"/>
+    ${[0, 1, 2].flatMap((r) => [0, 1, 2, 3].map((c) => `<rect x="${689.5 + c * 6.6}" y="${703 + r * 5.8}" width="4.4" height="3.8"/>`)).join('')}
   </g>
 
   <!-- award seal -->
   <g filter="url(#sh)">
-    <path d="M${cx - 30} 712 L${cx - 46} 772 L${cx - 30} 764 L${cx - 20} 780 L${cx - 6} 722 Z" fill="url(#purple)"/>
-    <path d="M${cx + 30} 712 L${cx + 46} 772 L${cx + 30} 764 L${cx + 20} 780 L${cx + 6} 722 Z" fill="url(#purple)"/>
-    <path d="${Array.from({ length: 48 }, (_, i) => {
-      const a = (i / 48) * Math.PI * 2
-      const rr = i % 2 ? 44 : 48
-      return `${i ? 'L' : 'M'}${r1(cx + rr * Math.cos(a))} ${r1(680 + rr * Math.sin(a))}`
+    <path d="M${cx - 32} 728 L${cx - 50} 784 L${cx - 32} 774 L${cx - 22} 792 L${cx - 6} 738 Z" fill="url(#purple)"/>
+    <path d="M${cx + 32} 728 L${cx + 50} 784 L${cx + 32} 774 L${cx + 22} 792 L${cx + 6} 738 Z" fill="url(#purple)"/>
+    <path d="${Array.from({ length: 56 }, (_, i) => {
+      const a = (i / 56) * Math.PI * 2
+      const rr = i % 2 ? 44 : 49
+      return `${i ? 'L' : 'M'}${r1(cx + rr * Math.cos(a))} ${r1(700 + rr * Math.sin(a))}`
     }).join(' ')} Z" fill="url(#seal)"/>
-    <circle cx="${cx}" cy="680" r="36" fill="none" stroke="#FFF3C4" stroke-width="1.5" opacity="0.8"/>
-    <g fill="none" stroke="#2A1468" stroke-width="2.6">
-      <rect x="${cx - 21}" y="676" width="17" height="11" rx="3"/>
-      <rect x="${cx + 3}" y="676" width="19" height="11" rx="3"/>
+    <circle cx="${cx}" cy="700" r="37" fill="none" stroke="#FFF3C4" stroke-width="1.6" opacity="0.85"/>
+    <circle cx="${cx}" cy="700" r="33" fill="none" stroke="#C88A22" stroke-width="0.8" opacity="0.7"/>
+    <g fill="none" stroke="#2A1468" stroke-width="2.8">
+      <rect x="${cx - 22}" y="697" width="18" height="12" rx="3"/>
+      <rect x="${cx + 3}" y="697" width="20" height="12" rx="3"/>
     </g>
-    <path d="M${cx - 21} 671 q 8 -6 16 -4 q -8 0 -16 4 Z M${cx + 6} 664 q 10 2 16 8 q -9 -4 -16 -8 Z" fill="#2A1468" stroke="#2A1468" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M${cx - 22} 692 q9 -7 17 -5 q-9 0 -17 5 Z M${cx + 6} 684 q11 2 17 9 q-10 -5 -17 -9 Z" fill="#2A1468" stroke="#2A1468" stroke-width="2.2" stroke-linejoin="round"/>
   </g>
 </svg>`
 }
