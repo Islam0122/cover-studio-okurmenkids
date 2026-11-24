@@ -2,6 +2,8 @@
 
 Онлайн-генератор обложек, титульных листов, сертификатов, отчётов и титульных слайдов формата A4 с живым редактором и экспортом в PDF/PNG.
 
+**Видеообзор:** [YouTube — Cover Studio: Design Documents in Minutes](https://youtu.be/4GcK-EKd5XA) (английская озвучка, русские и английские субтитры)
+
 **Стек:** React 19 · TypeScript · Vite · Tailwind CSS 4 · Zustand · Fabric.js 7 · jsPDF · Lucide React · React Router 7
 
 ## Запуск
