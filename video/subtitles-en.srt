@@ -1,0 +1,436 @@
+1
+00:00:04,550 --> 00:00:07,462
+This is Cover Studio, built for OkurmenKids:
+
+2
+00:00:07,482 --> 00:00:11,595
+a modern platform for designing
+document covers, certificates,
+
+3
+00:00:11,615 --> 00:00:13,261
+reports and title slides.
+
+4
+00:00:13,681 --> 00:00:18,180
+Everything runs in the browser. You
+pick a template, fill in your details,
+
+5
+00:00:18,200 --> 00:00:21,661
+fine-tune the design, and
+download a print-ready A4 file.
+
+6
+00:00:22,083 --> 00:00:25,313
+In the next few minutes, we'll
+walk through the real application,
+
+7
+00:00:25,333 --> 00:00:26,914
+and then look at how it's built.
+
+8
+00:00:30,934 --> 00:00:35,497
+Schools, universities and training
+centers produce a lot of documents:
+
+9
+00:00:35,517 --> 00:00:39,752
+coursework title pages, project
+covers, certificates and reports.
+
+10
+00:00:40,172 --> 00:00:43,347
+Making each one by hand in
+a graphics editor is slow,
+
+11
+00:00:43,367 --> 00:00:45,638
+and the results are rarely consistent.
+
+12
+00:00:46,059 --> 00:00:50,974
+Cover Studio solves this with parametric
+templates. You enter the content once —
+
+13
+00:00:50,994 --> 00:00:54,614
+the topic, the author, the
+supervisor and the institution —
+
+14
+00:00:54,634 --> 00:00:56,773
+and the layout is composed for you.
+
+15
+00:00:57,197 --> 00:01:01,396
+The interface itself is in Russian,
+and some templates are in Kyrgyz,
+
+16
+00:01:01,416 --> 00:01:03,780
+so we'll add English captions as we go.
+
+17
+00:01:07,805 --> 00:01:13,164
+The template gallery contains twelve
+templates across six categories: university,
+
+18
+00:01:13,184 --> 00:01:17,215
+school, IT projects, certificates,
+reports and presentations.
+
+19
+00:01:17,639 --> 00:01:21,674
+Every thumbnail is rendered live by
+the same engine the editor uses,
+
+20
+00:01:21,694 --> 00:01:24,357
+so what you see here is
+exactly what you get.
+
+21
+00:01:24,777 --> 00:01:29,836
+Search matches template names, descriptions
+and tags. Let's search for certificates.
+
+22
+00:01:30,255 --> 00:01:34,830
+Category chips narrow the list, and each
+one shows how many templates it contains.
+
+23
+00:01:35,251 --> 00:01:39,860
+There's also an orientation filter,
+for portrait or landscape A4 sheets.
+
+24
+00:01:40,675 --> 00:01:43,702
+Let's open the OkurmenKids
+certificate in the editor.
+
+25
+00:01:47,880 --> 00:01:50,063
+The editor uses a three-column layout.
+
+26
+00:01:50,484 --> 00:01:55,627
+On the left is the configuration panel, with
+tabs for the document data, the template,
+
+27
+00:01:55,647 --> 00:01:56,468
+and the style.
+
+28
+00:01:56,890 --> 00:02:01,512
+In the center is a Fabric.js canvas,
+drawn in exact A4 proportions,
+
+29
+00:02:01,532 --> 00:02:04,700
+with zoom controls and
+a fit-to-screen button.
+
+30
+00:02:05,123 --> 00:02:08,846
+On the right are the properties of the
+selected element, and the layers list.
+
+31
+00:02:09,268 --> 00:02:11,433
+When I change the topic in the form,
+
+32
+00:02:11,453 --> 00:02:14,833
+every text block that uses
+that field updates instantly.
+
+33
+00:02:15,253 --> 00:02:18,664
+Elements on the canvas can be
+selected, dragged into place,
+
+34
+00:02:18,684 --> 00:02:20,467
+and resized with their handles.
+
+35
+00:02:21,470 --> 00:02:27,076
+The properties panel gives precise control
+over position, size, rotation and opacity.
+
+36
+00:02:28,236 --> 00:02:32,373
+For text, I can change the font family,
+the size, the weight and the color.
+
+37
+00:02:40,215 --> 00:02:45,356
+The layers tab lists every element on the
+page. Each layer can be reordered, hidden,
+
+38
+00:02:45,376 --> 00:02:45,970
+or locked.
+
+39
+00:02:46,754 --> 00:02:52,538
+The toolbar above the canvas adds new
+elements: text, rectangles, ellipses, lines,
+
+40
+00:02:52,558 --> 00:02:54,520
+images and technology logos.
+
+41
+00:02:54,941 --> 00:02:58,415
+Shapes have their own fill, stroke
+and corner radius settings.
+
+42
+00:03:00,157 --> 00:03:02,423
+Every action goes into the history,
+
+43
+00:03:02,443 --> 00:03:05,951
+so undo and redo work with
+the buttons or with Ctrl+Z.
+
+44
+00:03:08,001 --> 00:03:12,025
+In the style tab, color presets
+recolor the whole document at once,
+
+45
+00:03:12,045 --> 00:03:15,949
+because templates reference theme
+colors instead of fixed values.
+
+46
+00:03:16,370 --> 00:03:21,489
+The background can be a solid color, a
+gradient with an adjustable angle, or a photo.
+
+47
+00:03:21,909 --> 00:03:24,023
+The OkurmenKids logo is built in,
+
+48
+00:03:24,043 --> 00:03:29,456
+and a signature can be drawn right on the
+screen with a mouse, a finger or a stylus.
+
+49
+00:03:33,756 --> 00:03:36,501
+When a stamp or a
+signature scan is uploaded,
+
+50
+00:03:36,521 --> 00:03:40,188
+the paper background is removed
+automatically, and the logo,
+
+51
+00:03:40,208 --> 00:03:44,490
+stamp and signature can be saved to
+a brand kit for every new project.
+
+52
+00:03:48,512 --> 00:03:54,180
+When the design is ready, the download
+dialog offers two formats: PDF for printing,
+
+53
+00:03:54,200 --> 00:03:55,550
+and PNG for sharing.
+
+54
+00:03:55,970 --> 00:04:04,349
+The sheet can be A4 portrait or A4 landscape,
+and there are three resolutions: 192,
+
+55
+00:04:04,369 --> 00:04:05,968
+300 and 384 DPI.
+
+56
+00:04:06,390 --> 00:04:09,485
+The dialog shows the exact
+output size in pixels,
+
+57
+00:04:09,505 --> 00:04:14,888
+and because export uses the same renderer
+as the canvas, the file matches the screen.
+
+58
+00:04:15,308 --> 00:04:19,141
+The PDF is generated right
+in the browser with jsPDF,
+
+59
+00:04:19,161 --> 00:04:21,904
+which is loaded only when it's needed.
+
+60
+00:04:25,926 --> 00:04:29,475
+There's no save button. The
+editor autosaves every change,
+
+61
+00:04:29,495 --> 00:04:32,059
+and the status in the top bar confirms it.
+
+62
+00:04:32,581 --> 00:04:37,615
+All projects appear on the My Projects
+page, sorted by when they were last edited,
+
+63
+00:04:37,635 --> 00:04:40,204
+and each one can be duplicated or deleted.
+
+64
+00:04:40,626 --> 00:04:45,429
+They're stored in the browser's local
+storage, so they survive a page reload.
+
+65
+00:04:45,449 --> 00:04:50,566
+Uploaded images are compressed and stored
+once, and projects reference them by ID.
+
+66
+00:04:50,990 --> 00:04:54,298
+Clicking a project reopens it
+exactly where you left off.
+
+67
+00:04:58,318 --> 00:05:03,520
+Under the hood, Cover Studio is built
+with React 19, TypeScript and Vite,
+
+68
+00:05:03,540 --> 00:05:05,737
+and styled with Tailwind CSS 4.
+
+69
+00:05:06,157 --> 00:05:11,703
+State lives in Zustand stores, the
+canvas is powered by Fabric.js 7,
+
+70
+00:05:11,723 --> 00:05:15,959
+PDFs come from jsPDF, and
+routing uses React Router.
+
+71
+00:05:17,229 --> 00:05:20,326
+Template definitions are
+functions of the page size,
+
+72
+00:05:20,346 --> 00:05:24,522
+so switching orientation rebuilds
+the layout instead of stretching it.
+
+73
+00:05:24,942 --> 00:05:29,196
+Text stores field placeholders, while
+colors and fonts are theme tokens.
+
+74
+00:05:29,216 --> 00:05:33,471
+That's why the form and the color
+presets can update everything at once.
+
+75
+00:05:33,891 --> 00:05:38,634
+The editor store holds the open document,
+the selection, the undo history,
+
+76
+00:05:38,654 --> 00:05:43,525
+zoom and preview mode. The project store
+persists projects to local storage.
+
+77
+00:05:43,945 --> 00:05:47,082
+A single Fabric renderer
+draws the editor canvas,
+
+78
+00:05:47,102 --> 00:05:50,046
+the gallery thumbnails
+and the exported files.
+
+79
+00:05:50,066 --> 00:05:55,201
+It only recreates objects whose content
+changed, so the selection is never lost.
+
+80
+00:05:55,621 --> 00:06:01,321
+Finally, two small utilities handle
+PNG export and lazy-loaded PDF export.
+
+81
+00:06:05,340 --> 00:06:09,229
+Cover Studio is a static single-page
+app, so deployment is simple.
+
+82
+00:06:09,649 --> 00:06:15,808
+For Vercel, a rewrite rule in vercel.json
+sends every route to index.html.
+
+83
+00:06:15,828 --> 00:06:20,484
+For Netlify, the same rule
+lives in the _redirects file.
+
+84
+00:06:20,906 --> 00:06:23,924
+For hosts without rewrites,
+such as GitHub Pages,
+
+85
+00:06:23,944 --> 00:06:28,574
+a separate static build switches to
+hash-based routing with relative paths.
+
+86
+00:06:29,843 --> 00:06:35,130
+That's Cover Studio: a template-driven
+document designer with a real canvas editor,
+
+87
+00:06:35,150 --> 00:06:39,734
+print-quality export and autosaved
+projects, all running in the browser.
+
+88
+00:06:40,154 --> 00:06:42,619
+Technically, it shows how one renderer,
+
+89
+00:06:42,639 --> 00:06:47,334
+parametric templates and theme tokens
+keep a complex editor consistent and
+
+90
+00:06:47,354 --> 00:06:48,098
+predictable.
+
+91
+00:06:48,519 --> 00:06:54,525
+The source code is on GitHub, at
+github.com/Islam0122/cover-studio-okurmenkids.
+
+92
+00:06:54,545 --> 00:06:56,050
+Thanks for watching!

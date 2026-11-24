@@ -1,0 +1,187 @@
+{
+  "title": "Cover Studio — OkurmenKids",
+  "voice": "af_heart",
+  "scenes": [
+    {
+      "id": "intro", "kind": "app", "chapter": "Introduction",
+      "card": null,
+      "lines": [
+        {"en": "This is Cover Studio, built for OkurmenKids: a modern platform for designing document covers, certificates, reports and title slides.",
+         "tts": "This is Cover Studio, built for Okurmen Kids: a modern platform for designing document covers, certificates, reports, and title slides.",
+         "ru": "Это Cover Studio, созданный для OkurmenKids: современная платформа для оформления обложек, сертификатов, отчётов и титульных слайдов."},
+        {"en": "Everything runs in the browser. You pick a template, fill in your details, fine-tune the design, and download a print-ready A4 file.",
+         "tts": "Everything runs in the browser. You pick a template, fill in your details, fine-tune the design, and download a print-ready A-four file.",
+         "ru": "Всё работает в браузере. Вы выбираете шаблон, вводите данные, настраиваете дизайн и скачиваете готовый к печати файл A4."},
+        {"en": "In the next few minutes, we'll walk through the real application, and then look at how it's built.",
+         "ru": "В ближайшие несколько минут мы пройдёмся по настоящему приложению, а затем посмотрим, как оно устроено."}
+      ]
+    },
+    {
+      "id": "overview", "kind": "app", "chapter": "The problem it solves",
+      "card": {"num": "01", "title": "The problem it solves", "sub": "Professional documents without manual design"},
+      "lines": [
+        {"en": "Schools, universities and training centers produce a lot of documents: coursework title pages, project covers, certificates and reports.",
+         "ru": "Школы, университеты и учебные центры выпускают множество документов: титульные листы курсовых, обложки проектов, сертификаты и отчёты."},
+        {"en": "Making each one by hand in a graphics editor is slow, and the results are rarely consistent.",
+         "ru": "Делать каждый вручную в графическом редакторе долго, а результат редко получается единообразным."},
+        {"en": "Cover Studio solves this with parametric templates. You enter the content once — the topic, the author, the supervisor and the institution — and the layout is composed for you.",
+         "tts": "Cover Studio solves this with parametric templates. You enter the content once: the topic, the author, the supervisor, and the institution. And the layout is composed for you.",
+         "ru": "Cover Studio решает это параметрическими шаблонами. Вы один раз вводите содержание — тему, автора, руководителя и учреждение, — и макет собирается автоматически."},
+        {"en": "The interface itself is in Russian, and some templates are in Kyrgyz, so we'll add English captions as we go.",
+         "ru": "Сам интерфейс на русском языке, а некоторые шаблоны — на кыргызском, поэтому по ходу видео мы добавим английские подписи."}
+      ]
+    },
+    {
+      "id": "gallery", "kind": "app", "chapter": "Template gallery",
+      "card": {"num": "02", "title": "Template gallery", "sub": "Categories · search · orientation"},
+      "lines": [
+        {"en": "The template gallery contains twelve templates across six categories: university, school, IT projects, certificates, reports and presentations.",
+         "ru": "В галерее двенадцать шаблонов в шести категориях: университет, школа, IT-проекты, сертификаты, отчёты и презентации."},
+        {"en": "Every thumbnail is rendered live by the same engine the editor uses, so what you see here is exactly what you get.",
+         "ru": "Каждая миниатюра рисуется тем же движком, что и редактор, поэтому вы видите ровно то, что получите."},
+        {"en": "Search matches template names, descriptions and tags. Let's search for certificates.",
+         "ru": "Поиск идёт по названиям, описаниям и тегам шаблонов. Найдём сертификаты."},
+        {"en": "Category chips narrow the list, and each one shows how many templates it contains.",
+         "ru": "Чипы категорий сужают список, и на каждом указано, сколько в нём шаблонов."},
+        {"en": "There's also an orientation filter, for portrait or landscape A4 sheets.",
+         "tts": "There's also an orientation filter, for portrait or landscape A-four sheets.",
+         "ru": "Есть и фильтр по ориентации — книжный или альбомный лист A4."},
+        {"en": "Let's open the OkurmenKids certificate in the editor.",
+         "tts": "Let's open the Okurmen Kids certificate in the editor.",
+         "ru": "Откроем сертификат «Окурмэн Kids» в редакторе."}
+      ]
+    },
+    {
+      "id": "editor", "kind": "app", "chapter": "Document editor",
+      "card": {"num": "03", "title": "The document editor", "sub": "Configuration · Fabric.js canvas · properties"},
+      "lines": [
+        {"en": "The editor uses a three-column layout.",
+         "ru": "Редактор устроен в три колонки."},
+        {"en": "On the left is the configuration panel, with tabs for the document data, the template, and the style.",
+         "ru": "Слева — панель настройки с вкладками «Данные», «Шаблон» и «Стиль»."},
+        {"en": "In the center is a Fabric.js canvas, drawn in exact A4 proportions, with zoom controls and a fit-to-screen button.",
+         "tts": "In the center is a Fabric JS canvas, drawn in exact A-four proportions, with zoom controls, and a fit-to-screen button.",
+         "ru": "В центре — холст Fabric.js в точных пропорциях A4, с кнопками масштаба и «вписать в экран»."},
+        {"en": "On the right are the properties of the selected element, and the layers list.",
+         "ru": "Справа — свойства выбранного элемента и список слоёв."},
+        {"en": "When I change the topic in the form, every text block that uses that field updates instantly.",
+         "ru": "Когда я меняю тему в форме, все текстовые блоки, использующие это поле, обновляются мгновенно."},
+        {"en": "Elements on the canvas can be selected, dragged into place, and resized with their handles.",
+         "ru": "Элементы на холсте можно выделять, перетаскивать и масштабировать за маркеры."},
+        {"en": "The properties panel gives precise control over position, size, rotation and opacity.",
+         "ru": "Панель свойств даёт точный контроль над положением, размером, поворотом и прозрачностью."},
+        {"en": "For text, I can change the font family, the size, the weight and the color.",
+         "ru": "Для текста можно поменять шрифт, размер, насыщенность и цвет."}
+      ]
+    },
+    {
+      "id": "design", "kind": "app", "chapter": "Design capabilities",
+      "card": {"num": "04", "title": "Design capabilities", "sub": "Layers · shapes · history · themes · brand kit"},
+      "lines": [
+        {"en": "The layers tab lists every element on the page. Each layer can be reordered, hidden, or locked.",
+         "ru": "Вкладка «Слои» перечисляет все элементы страницы. Каждый слой можно переместить, скрыть или заблокировать."},
+        {"en": "The toolbar above the canvas adds new elements: text, rectangles, ellipses, lines, images and technology logos.",
+         "ru": "Панель над холстом добавляет новые элементы: текст, прямоугольники, эллипсы, линии, изображения и логотипы технологий."},
+        {"en": "Shapes have their own fill, stroke and corner radius settings.",
+         "ru": "У фигур есть свои настройки заливки, обводки и скругления углов."},
+        {"en": "Every action goes into the history, so undo and redo work with the buttons or with Ctrl+Z.",
+         "tts": "Every action goes into the history, so undo and redo work with the buttons, or with Control Z.",
+         "ru": "Каждое действие попадает в историю, поэтому отмена и повтор работают кнопками или через Ctrl+Z."},
+        {"en": "In the style tab, color presets recolor the whole document at once, because templates reference theme colors instead of fixed values.",
+         "ru": "Во вкладке «Стиль» пресеты перекрашивают весь документ сразу: шаблоны ссылаются на цвета темы, а не на фиксированные значения."},
+        {"en": "The background can be a solid color, a gradient with an adjustable angle, or a photo.",
+         "ru": "Фоном может быть сплошной цвет, градиент с настраиваемым углом или фотография."},
+        {"en": "The OkurmenKids logo is built in, and a signature can be drawn right on the screen with a mouse, a finger or a stylus.",
+         "tts": "The Okurmen Kids logo is built in, and a signature can be drawn right on the screen, with a mouse, a finger, or a stylus.",
+         "ru": "Логотип «Окурмэн Kids» встроен, а подпись можно нарисовать прямо на экране — мышью, пальцем или стилусом."},
+        {"en": "When a stamp or a signature scan is uploaded, the paper background is removed automatically, and the logo, stamp and signature can be saved to a brand kit for every new project.",
+         "ru": "При загрузке печати или скана подписи фон бумаги удаляется автоматически, а логотип, печать и подпись можно сохранить в фирменный набор для всех новых проектов."}
+      ]
+    },
+    {
+      "id": "export", "kind": "app", "chapter": "Export to PNG and PDF",
+      "card": {"num": "05", "title": "Export", "sub": "PDF · PNG · A4 · up to 384 DPI"},
+      "lines": [
+        {"en": "When the design is ready, the download dialog offers two formats: PDF for printing, and PNG for sharing.",
+         "ru": "Когда дизайн готов, окно скачивания предлагает два формата: PDF для печати и PNG для отправки."},
+        {"en": "The sheet can be A4 portrait or A4 landscape, and there are three resolutions: 192, 300 and 384 DPI.",
+         "tts": "The sheet can be A-four portrait, or A-four landscape, and there are three resolutions: one hundred ninety-two, three hundred, and three hundred eighty-four D P I.",
+         "ru": "Лист может быть A4 книжным или альбомным, а разрешений три: 192, 300 и 384 DPI."},
+        {"en": "The dialog shows the exact output size in pixels, and because export uses the same renderer as the canvas, the file matches the screen.",
+         "ru": "Окно показывает точный размер в пикселях, а поскольку экспорт использует тот же рендерер, что и холст, файл совпадает с экраном."},
+        {"en": "The PDF is generated right in the browser with jsPDF, which is loaded only when it's needed.",
+         "tts": "The PDF is generated right in the browser with JS PDF, which is loaded only when it's needed.",
+         "ru": "PDF создаётся прямо в браузере с помощью jsPDF, который загружается только когда он нужен."}
+      ]
+    },
+    {
+      "id": "projects", "kind": "app", "chapter": "Projects and autosave",
+      "card": {"num": "06", "title": "Projects & autosave", "sub": "LocalStorage persistence"},
+      "lines": [
+        {"en": "There's no save button. The editor autosaves every change, and the status in the top bar confirms it.",
+         "ru": "Кнопки «Сохранить» нет. Редактор сохраняет каждое изменение автоматически, а статус в верхней панели это подтверждает."},
+        {"en": "All projects appear on the My Projects page, sorted by when they were last edited, and each one can be duplicated or deleted.",
+         "ru": "Все проекты появляются на странице «Мои проекты», отсортированные по дате изменения, и каждый можно дублировать или удалить."},
+        {"en": "They're stored in the browser's local storage, so they survive a page reload. Uploaded images are compressed and stored once, and projects reference them by ID.",
+         "tts": "They're stored in the browser's local storage, so they survive a page reload. Uploaded images are compressed and stored once, and projects reference them by I D.",
+         "ru": "Они хранятся в localStorage браузера и переживают перезагрузку страницы. Загруженные изображения сжимаются и хранятся один раз, а проекты ссылаются на них по ID."},
+        {"en": "Clicking a project reopens it exactly where you left off.",
+         "ru": "Клик по проекту открывает его ровно там, где вы остановились."}
+      ]
+    },
+    {
+      "id": "stack", "kind": "slide", "chapter": "Technology stack",
+      "card": {"num": "07", "title": "Technology & architecture", "sub": "How Cover Studio is built"},
+      "lines": [
+        {"en": "Under the hood, Cover Studio is built with React 19, TypeScript and Vite, and styled with Tailwind CSS 4.",
+         "tts": "Under the hood, Cover Studio is built with React nineteen, TypeScript, and Vite, and styled with Tailwind CSS four.",
+         "ru": "Внутри Cover Studio построен на React 19, TypeScript и Vite, а стили — на Tailwind CSS 4."},
+        {"en": "State lives in Zustand stores, the canvas is powered by Fabric.js 7, PDFs come from jsPDF, and routing uses React Router.",
+         "tts": "State lives in Zustand stores, the canvas is powered by Fabric JS seven, PDFs come from JS PDF, and routing uses React Router.",
+         "ru": "Состояние хранится в сторах Zustand, холст работает на Fabric.js 7, PDF создаёт jsPDF, а маршрутизацию обеспечивает React Router."}
+      ]
+    },
+    {
+      "id": "architecture", "kind": "slide", "chapter": "Architecture",
+      "card": null,
+      "lines": [
+        {"en": "Template definitions are functions of the page size, so switching orientation rebuilds the layout instead of stretching it.",
+         "ru": "Определения шаблонов — это функции от размеров листа, поэтому смена ориентации перестраивает макет, а не растягивает его."},
+        {"en": "Text stores field placeholders, while colors and fonts are theme tokens. That's why the form and the color presets can update everything at once.",
+         "ru": "Текст хранит плейсхолдеры полей, а цвета и шрифты — токены темы. Поэтому форма и цветовые пресеты обновляют всё сразу."},
+        {"en": "The editor store holds the open document, the selection, the undo history, zoom and preview mode. The project store persists projects to local storage.",
+         "ru": "Стор редактора хранит открытый документ, выделение, историю отмен, масштаб и режим просмотра. Стор проектов сохраняет проекты в localStorage."},
+        {"en": "A single Fabric renderer draws the editor canvas, the gallery thumbnails and the exported files. It only recreates objects whose content changed, so the selection is never lost.",
+         "ru": "Единый рендерер на Fabric рисует холст редактора, миниатюры галереи и экспортируемые файлы. Он пересоздаёт только изменившиеся объекты, поэтому выделение не теряется."},
+        {"en": "Finally, two small utilities handle PNG export and lazy-loaded PDF export.",
+         "ru": "Наконец, две небольшие утилиты отвечают за экспорт PNG и лениво загружаемый экспорт PDF."}
+      ]
+    },
+    {
+      "id": "deploy", "kind": "slide", "chapter": "Deployment",
+      "card": {"num": "08", "title": "Deployment", "sub": "Vercel · Netlify · static hosting"},
+      "lines": [
+        {"en": "Cover Studio is a static single-page app, so deployment is simple.",
+         "ru": "Cover Studio — статическое одностраничное приложение, поэтому развёртывание простое."},
+        {"en": "For Vercel, a rewrite rule in vercel.json sends every route to index.html. For Netlify, the same rule lives in the _redirects file.",
+         "tts": "For Vercel, a rewrite rule in vercel dot json sends every route to index dot HTML. For Netlify, the same rule lives in the underscore redirects file.",
+         "ru": "Для Vercel правило в vercel.json направляет все маршруты на index.html. Для Netlify то же правило лежит в файле _redirects."},
+        {"en": "For hosts without rewrites, such as GitHub Pages, a separate static build switches to hash-based routing with relative paths.",
+         "ru": "Для хостингов без переписывания маршрутов, например GitHub Pages, отдельная статическая сборка переключается на hash-маршрутизацию с относительными путями."}
+      ]
+    },
+    {
+      "id": "outro", "kind": "slide", "chapter": "Conclusion",
+      "card": null,
+      "lines": [
+        {"en": "That's Cover Studio: a template-driven document designer with a real canvas editor, print-quality export and autosaved projects, all running in the browser.",
+         "ru": "Это Cover Studio: конструктор документов на основе шаблонов с настоящим редактором холста, экспортом печатного качества и автосохранением — и всё это в браузере."},
+        {"en": "Technically, it shows how one renderer, parametric templates and theme tokens keep a complex editor consistent and predictable.",
+         "ru": "Технически проект показывает, как единый рендерер, параметрические шаблоны и токены темы делают сложный редактор согласованным и предсказуемым."},
+        {"en": "The source code is on GitHub, at github.com/Islam0122/cover-studio-okurmenkids. Thanks for watching!",
+         "tts": "The source code is on GitHub: Islam zero one two two, slash, cover studio okurmen kids. Thanks for watching!",
+         "ru": "Исходный код — на GitHub: github.com/Islam0122/cover-studio-okurmenkids. Спасибо за просмотр!"}
+      ]
+    }
+  ]
+}

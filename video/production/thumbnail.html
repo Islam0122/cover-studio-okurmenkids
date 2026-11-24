@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Cover Studio — thumbnail</title>
+<!-- Rendered at 1280x720 by `node render-thumbnail.cjs`; shot.png is a real screenshot from screenshots.cjs -->
+<style>
+  * { box-sizing:border-box; margin:0; padding:0 }
+  html,body { width:1280px; height:720px; overflow:hidden; background:#0A0F1F; font-family:Inter, system-ui, sans-serif; color:#fff }
+  .blob { position:absolute; border-radius:50%; filter:blur(80px) }
+  .b1 { width:700px; height:700px; left:-260px; top:-300px; background:radial-gradient(circle,#2B46E0,transparent 70%); opacity:.75 }
+  .b2 { width:640px; height:640px; right:-180px; bottom:-320px; background:radial-gradient(circle,#7A3FE0,transparent 70%); opacity:.6 }
+  .grid { position:absolute; inset:0; background-image:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px); background-size:48px 48px; mask-image:radial-gradient(ellipse at 30% 50%,#000 20%,transparent 70%) }
+  .text { position:absolute; left:70px; top:120px; width:560px }
+  .chip { display:inline-flex; align-items:center; gap:10px; padding:9px 18px; border-radius:999px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.14); font-weight:700; font-size:20px; letter-spacing:.02em }
+  .chip i { width:10px; height:10px; border-radius:50%; background:#E89A2C; box-shadow:0 0 14px #E89A2C }
+  h1 { margin-top:26px; font-size:124px; line-height:.92; font-weight:900; letter-spacing:-.055em }
+  h1 span { display:block; background:linear-gradient(120deg,#8FA4FF,#5B7BFF 60%,#B48CFF); -webkit-background-clip:text; color:transparent }
+  h2 { margin-top:28px; font-size:46px; line-height:1.08; font-weight:800; letter-spacing:-.03em }
+  h2 em { font-style:normal; color:#FFC266 }
+  .stack { margin-top:26px; font-size:19px; font-weight:600; color:#AFB9DD }
+  .shot { position:absolute; right:-70px; top:110px; width:700px; border-radius:16px; overflow:hidden; transform:perspective(1400px) rotateY(-14deg) rotateX(4deg) rotate(1.5deg);
+    box-shadow:0 40px 90px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.12) }
+  .shot img { display:block; width:100% }
+  .badge { position:absolute; right:56px; bottom:52px; padding:14px 22px; border-radius:16px; background:#fff; color:#0A0F1F; font-weight:800; font-size:24px; box-shadow:0 20px 50px rgba(0,0,0,.4) }
+  .badge b { color:#3B5BFD }
+</style>
+</head>
+<body>
+  <div class="blob b1"></div><div class="blob b2"></div><div class="grid"></div>
+  <div class="shot"><img src="shot.png" alt=""></div>
+  <div class="text">
+    <div class="chip"><i></i>OkurmenKids</div>
+    <h1>Cover<span>Studio</span></h1>
+    <h2>Design Documents<br><em>in Minutes</em></h2>
+    <div class="stack">React 19 · Fabric.js · PDF / PNG export</div>
+  </div>
+  <div class="badge">A4 · <b>300+ DPI</b></div>
+</body>
+</html>

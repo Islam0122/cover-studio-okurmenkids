@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Cover Studio — video slides</title>
+<!-- Rendered at 1600x900 CSS px (x1.2 = 1920x1080) by record.cjs. ?s=card|opener|stack|architecture|deploy|outro -->
+<style>
+  :root { --bg:#0A0F1F; --panel:#121A33; --line:rgba(255,255,255,.09); --ink:#F3F5FF; --muted:#9AA6C8; --brand:#3B5BFD; --brand2:#7C93FF; --accent:#E89A2C; }
+  * { box-sizing:border-box; margin:0; padding:0 }
+  html,body { width:1600px; height:900px; overflow:hidden; background:var(--bg); color:var(--ink); font-family:Inter, system-ui, sans-serif; -webkit-font-smoothing:antialiased }
+  .bg { position:fixed; inset:0; overflow:hidden }
+  .blob { position:absolute; border-radius:50%; filter:blur(90px); opacity:.55 }
+  .b1 { width:760px; height:760px; left:-180px; top:-260px; background:radial-gradient(circle,#2B46E0,transparent 70%); animation:drift1 14s ease-in-out infinite alternate }
+  .b2 { width:700px; height:700px; right:-200px; bottom:-280px; background:radial-gradient(circle,#6A3FD8,transparent 70%); animation:drift2 16s ease-in-out infinite alternate }
+  .grid { position:absolute; inset:0; background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px); background-size:64px 64px; mask-image:radial-gradient(ellipse at center,#000 30%,transparent 75%); opacity:.45 }
+  @keyframes drift1 { to { transform:translate(140px,90px) scale(1.1) } }
+  @keyframes drift2 { to { transform:translate(-120px,-70px) scale(1.08) } }
+  .slide { position:relative; display:none; width:100%; height:100%; padding:84px 110px }
+  .slide.active { display:block }
+  .r { opacity:0; transform:translateY(26px); transition:opacity .7s cubic-bezier(.2,.8,.2,1), transform .7s cubic-bezier(.2,.8,.2,1) }
+  .r.on { opacity:1; transform:none }
+  .eyebrow { font:700 15px/1 Inter; letter-spacing:.22em; text-transform:uppercase; color:var(--brand2) }
+  h1 { font-size:58px; font-weight:800; letter-spacing:-.035em; line-height:1.05 }
+  h2 { font-size:44px; font-weight:800; letter-spacing:-.03em; line-height:1.1 }
+  .muted { color:var(--muted) }
+  code, .mono { font-family:"JetBrains Mono", ui-monospace, monospace }
+
+  /* section card */
+  #card { display:none; align-items:center; justify-content:center; text-align:left }
+  #card.active { display:flex }
+  .card-inner { width:1100px }
+  .num { font:800 150px/1 Inter; letter-spacing:-.06em; background:linear-gradient(135deg,#fff 10%,#7C93FF 90%); -webkit-background-clip:text; color:transparent }
+  .card-title { margin-top:12px; font-size:76px; font-weight:800; letter-spacing:-.04em; line-height:1.02 }
+  .card-sub { margin-top:22px; font-size:26px; color:var(--muted); font-weight:500 }
+  .rule { margin-top:40px; height:4px; width:0; border-radius:4px; background:linear-gradient(90deg,var(--brand),var(--brand2),transparent); transition:width 1.6s cubic-bezier(.2,.8,.2,1) }
+  .rule.on { width:520px }
+
+  /* opener */
+  #opener { display:none; align-items:center; justify-content:center; flex-direction:column; text-align:center }
+  #opener.active { display:flex }
+  .logo { width:120px; height:120px; border-radius:30px; background:linear-gradient(140deg,#4F6BFF,#2238C9); display:flex; align-items:center; justify-content:center; box-shadow:0 30px 80px rgba(59,91,253,.45) }
+  .logo svg { width:62px; height:62px }
+  .brand { margin-top:36px; font-size:104px; font-weight:800; letter-spacing:-.05em; line-height:1 }
+  .brand span { color:var(--brand2) }
+  .tag { margin-top:24px; font-size:30px; color:var(--muted); font-weight:500 }
+  .pill { display:inline-block; margin-top:34px; padding:10px 22px; border:1px solid var(--line); border-radius:999px; background:rgba(255,255,255,.04); font-size:18px; color:#C9D2F5 }
+
+  /* stack */
+  .tiles { margin-top:80px; display:grid; grid-template-columns:repeat(4,1fr); gap:22px }
+  .tile { height:240px; border-radius:22px; background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.025)); border:1px solid var(--line); padding:26px; display:flex; flex-direction:column; justify-content:space-between }
+  .tile img, .tile .mono-icon { width:72px; height:72px }
+  .mono-icon { border-radius:14px; display:flex; align-items:center; justify-content:center; font:800 22px/1 Inter; color:#fff }
+  .tile b { font-size:28px; font-weight:700; letter-spacing:-.02em }
+  .tile small { display:block; margin-top:6px; font-size:17px; color:var(--muted) }
+
+  /* architecture */
+  .arch { margin-top:26px; display:grid; grid-template-columns:1.05fr 1fr; gap:34px }
+  .stack-col { display:flex; flex-direction:column; gap:14px }
+  .box { border-radius:18px; border:1px solid var(--line); background:rgba(18,26,51,.85); padding:14px 20px }
+  .box .p { font:600 15px/1.2 "JetBrains Mono", monospace; color:var(--brand2) }
+  .box .t { margin-top:6px; font-size:21px; font-weight:700; letter-spacing:-.01em }
+  .box .d { margin-top:4px; font-size:16px; color:var(--muted); line-height:1.45 }
+  .box.hot { border-color:rgba(124,147,255,.65); box-shadow:0 0 0 1px rgba(124,147,255,.3),0 20px 50px rgba(59,91,253,.25) }
+  .fan { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:12px }
+  .fan div { border-radius:12px; padding:10px 12px; background:rgba(255,255,255,.05); font-size:15px; text-align:center; color:#DCE2FF }
+  pre { border-radius:18px; border:1px solid var(--line); background:#0D1428; padding:16px 20px; font:500 14.5px/1.5 "JetBrains Mono", monospace; color:#CBD3F0; white-space:pre; overflow:hidden }
+  .k { color:#C792EA } .s { color:#C3E88D } .f { color:#82AAFF } .c { color:#5E6A8E } .n { color:#F78C6C } .tk { color:#FFCB6B }
+  .codecap { margin:0 0 10px; font:600 14px/1 "JetBrains Mono", monospace; color:var(--muted) }
+
+  /* deploy */
+  .dcols { margin-top:50px; display:grid; grid-template-columns:repeat(3,1fr); gap:24px }
+  .dcard { border-radius:22px; border:1px solid var(--line); background:rgba(18,26,51,.85); padding:28px; min-height:430px; display:flex; flex-direction:column }
+  .dcard .hd { display:flex; align-items:center; gap:14px }
+  .dcard .hd img { width:44px; height:44px; background:#fff; border-radius:10px; padding:6px }
+  .dcard h3 { font-size:26px; font-weight:800; letter-spacing:-.02em }
+  .dcard p { margin-top:16px; font-size:17px; line-height:1.5; color:var(--muted) }
+  .dcard pre { margin-top:auto; font-size:14.5px }
+  .note { margin-top:30px; font-size:17px; color:var(--muted) }
+
+  /* outro */
+  .ogrid { margin-top:46px; display:grid; grid-template-columns:repeat(2,1fr); gap:16px 40px; max-width:1200px }
+  .ogrid div { display:flex; gap:14px; align-items:flex-start; font-size:22px; line-height:1.4; color:#DCE2FF }
+  .ogrid i { flex:none; margin-top:9px; width:10px; height:10px; border-radius:50%; background:var(--brand2) }
+  .gh { margin-top:58px; display:inline-flex; align-items:center; gap:18px; padding:20px 30px; border-radius:20px; background:#fff; color:#0A0F1F; box-shadow:0 30px 80px rgba(0,0,0,.35) }
+  .gh img { width:40px; height:40px }
+  .gh span { font:700 26px/1 "JetBrains Mono", monospace; letter-spacing:-.01em }
+  .credit { margin-top:34px; font-size:20px; color:var(--muted) }
+  .credit b { color:var(--ink) }
+</style>
+</head>
+<body>
+<div class="bg"><div class="blob b1"></div><div class="blob b2"></div><div class="grid"></div></div>
+
+<section class="slide" id="opener">
+  <div class="logo r s0"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2.5" width="16" height="19" rx="3"/><path d="M8 7.5h8M8 11h8M8 14.5h5"/></svg></div>
+  <div class="brand r s0">Cover<span>Studio</span></div>
+  <div class="tag r s1">A document &amp; cover design platform — built for OkurmenKids</div>
+  <div class="pill r s1">React 19 · TypeScript · Fabric.js 7 · jsPDF</div>
+</section>
+
+<section class="slide" id="card">
+  <div class="card-inner">
+    <div class="num r s0" id="c-num">01</div>
+    <div class="card-title r s0" id="c-title">Title</div>
+    <div class="card-sub r s1" id="c-sub">Subtitle</div>
+    <div class="rule s1"></div>
+  </div>
+</section>
+
+<section class="slide" id="stack">
+  <div class="eyebrow r s0">Technology stack</div>
+  <h2 class="r s0" style="margin-top:16px">Built on a modern front-end stack</h2>
+  <div class="tiles">
+    <div class="tile r s0"><img src="../../node_modules/devicon/icons/react/react-original.svg"><div><b>React 19</b><small>UI and pages</small></div></div>
+    <div class="tile r s0"><img src="../../node_modules/devicon/icons/typescript/typescript-original.svg"><div><b>TypeScript</b><small>Typed document model</small></div></div>
+    <div class="tile r s0"><img src="../../node_modules/devicon/icons/vitejs/vitejs-original.svg"><div><b>Vite</b><small>Dev server &amp; build</small></div></div>
+    <div class="tile r s0"><img src="../../node_modules/devicon/icons/tailwindcss/tailwindcss-original.svg"><div><b>Tailwind CSS 4</b><small>Styling</small></div></div>
+    <div class="tile r s1"><img src="../../node_modules/devicon/icons/zustand/zustand-original.svg"><div><b>Zustand</b><small>Editor &amp; project state</small></div></div>
+    <div class="tile r s1"><div class="mono-icon" style="background:linear-gradient(135deg,#F05A28,#B8350E)">F</div><div><b>Fabric.js 7</b><small>Canvas renderer</small></div></div>
+    <div class="tile r s1"><div class="mono-icon" style="background:linear-gradient(135deg,#E5484D,#A3161B)">PDF</div><div><b>jsPDF</b><small>PDF export, lazy-loaded</small></div></div>
+    <div class="tile r s1"><img src="../../node_modules/devicon/icons/reactrouter/reactrouter-original.svg" style="background:#fff;border-radius:12px;padding:6px"><div><b>React Router</b><small>Routes &amp; hash mode</small></div></div>
+  </div>
+</section>
+
+<section class="slide" id="architecture">
+  <div class="eyebrow r s0">Architecture · src/</div>
+  <h2 class="r s0" style="margin-top:14px">One document model, one renderer</h2>
+  <div class="arch">
+    <div class="stack-col">
+      <div class="box r s0" id="a0"><div class="p">templates/</div><div class="t">Template definitions</div><div class="d">Parametric <code>layout(W, H)</code> — rebuilt, not stretched, on orientation change</div></div>
+      <div class="box r s1" id="a1"><div class="p">types/template.ts</div><div class="t">Fields &amp; theme tokens</div><div class="d"><code>{{studentName}}</code> placeholders · <code>$primary</code> colours · <code>$heading</code> fonts</div></div>
+      <div class="box r s2" id="a2"><div class="p">store/editorStore.ts · store/projectStore.ts</div><div class="t">Editor state &amp; project state</div><div class="d">Document, selection, undo history, zoom, preview · projects persisted to LocalStorage</div></div>
+      <div class="box r s3" id="a3"><div class="p">utils/renderer.ts</div><div class="t">Single Fabric.js renderer</div>
+        <div class="fan"><div>Editor canvas</div><div>Gallery thumbnails</div><div>Export</div></div></div>
+      <div class="box r s4" id="a4"><div class="p">utils/exportImage.ts · utils/exportPdf.ts</div><div class="t">PNG &amp; PDF export</div><div class="d">192 / 300 / 384 DPI · jsPDF imported on demand</div></div>
+    </div>
+    <div>
+      <div class="r s0" id="code0">
+        <p class="codecap">src/templates/index.ts</p>
+<pre><span class="k">const</span> universityBand: <span class="tk">TemplateDefinition</span> = {
+  id: <span class="s">'university-band'</span>,
+  orientation: <span class="s">'portrait'</span>,
+  palette: { primary: <span class="s">'#0F1B3D'</span>, accent: <span class="s">'#4F7CFF'</span>, … },
+  fonts: { heading: <span class="s">'Montserrat'</span>, body: <span class="s">'Inter'</span> },
+  <span class="f">layout</span>: ({ width: W, height: H }) =&gt; {
+    <span class="k">const</span> band = W * <span class="n">0.32</span>
+    <span class="k">return</span> [
+      <span class="f">shape</span>(<span class="s">'Боковая панель'</span>, <span class="s">'rect'</span>,
+        { x: <span class="n">0</span>, y: <span class="n">0</span>, width: band, height: H },
+        { fill: <span class="s">'$primary'</span> }),
+      <span class="f">text</span>(<span class="s">'Учреждение'</span>, <span class="s">'{{institution}}'</span>, …),
+    ]
+  },
+}</pre>
+      </div>
+      <div class="r s2" id="code1" style="margin-top:14px">
+        <p class="codecap">src/store/editorStore.ts</p>
+<pre><span class="k">interface</span> <span class="tk">EditorState</span> {
+  doc: <span class="tk">CoverDocument</span> | <span class="k">null</span>
+  selectedId: <span class="k">string</span> | <span class="k">null</span>
+  past: <span class="tk">CoverDocument</span>[]
+  future: <span class="tk">CoverDocument</span>[]
+  zoom: <span class="k">number</span>
+  preview: <span class="k">boolean</span>
+  <span class="c">/** Every document change goes through here */</span>
+  <span class="f">commit</span>: (next, coalesceKey?) =&gt; <span class="k">void</span>
+}</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="deploy">
+  <div class="eyebrow r s0">Deployment</div>
+  <h2 class="r s0" style="margin-top:16px">A static single-page app</h2>
+  <div class="dcols">
+    <div class="dcard r s1"><div class="hd"><img src="../../node_modules/devicon/icons/vercel/vercel-original.svg"><h3>Vercel</h3></div>
+      <p><code>npm run build</code> → <code>dist/</code>. Every route is rewritten to <code>index.html</code>.</p>
+<pre><span class="c">// vercel.json</span>
+{ <span class="s">"rewrites"</span>: [{
+  <span class="s">"source"</span>: <span class="s">"/(.*)"</span>,
+  <span class="s">"destination"</span>: <span class="s">"/index.html"</span>
+}] }</pre></div>
+    <div class="dcard r s1"><div class="hd"><img src="../../node_modules/devicon/icons/netlify/netlify-original.svg"><h3>Netlify</h3></div>
+      <p>The same SPA fallback, shipped from <code>public/</code> into the build output.</p>
+<pre><span class="c"># public/_redirects</span>
+/*  /index.html  <span class="n">200</span></pre></div>
+    <div class="dcard r s2"><div class="hd"><img src="../../node_modules/devicon/icons/github/github-original.svg"><h3>Static hosts</h3></div>
+      <p>For hosts without rewrites (e.g. GitHub Pages): hash routing and relative paths.</p>
+<pre><span class="c"># npm run build:static</span>
+VITE_HASH_ROUTER=<span class="n">1</span> vite build \
+  --base=./
+<span class="c"># → /#/editor/:projectId</span></pre></div>
+  </div>
+  <p class="note r s2">No production URL is published in the repository, so none is shown here.</p>
+</section>
+
+<section class="slide" id="outro">
+  <div class="eyebrow r s0">Summary</div>
+  <h1 class="r s0" style="margin-top:16px">Cover Studio — design documents in minutes</h1>
+  <div class="ogrid">
+    <div class="r s0"><i></i>12 templates in 6 categories, with search and filters</div>
+    <div class="r s0"><i></i>Fabric.js canvas editor with layers and undo/redo</div>
+    <div class="r s1"><i></i>Parametric templates and theme tokens</div>
+    <div class="r s1"><i></i>One renderer for canvas, thumbnails and export</div>
+    <div class="r s0"><i></i>PNG &amp; PDF export, A4, up to 384 DPI</div>
+    <div class="r s0"><i></i>Autosaved projects in LocalStorage</div>
+  </div>
+  <div class="gh r s2"><img src="../../node_modules/devicon/icons/github/github-original.svg"><span>github.com/Islam0122/cover-studio-okurmenkids</span></div>
+  <p class="credit r s2">Developed by <b>Islam Duishobaev</b></p>
+</section>
+
+<script>
+  const q = new URLSearchParams(location.search)
+  const id = q.get('s') || 'opener'
+  const el = document.getElementById(id)
+  el.classList.add('active')
+  if (id === 'card') {
+    document.getElementById('c-num').textContent = q.get('num') || ''
+    document.getElementById('c-title').textContent = q.get('title') || ''
+    document.getElementById('c-sub').textContent = q.get('sub') || ''
+  }
+  // Reveal everything up to step n (and mark the newest architecture box)
+  window.step = (n) => {
+    for (let i = 0; i <= n; i++) el.querySelectorAll('.s' + i).forEach((e) => e.classList.add('on'))
+    el.querySelectorAll('.box').forEach((b) => b.classList.remove('hot'))
+    const hot = document.getElementById('a' + n); if (hot) hot.classList.add('hot')
+  }
+</script>
+</body>
+</html>
